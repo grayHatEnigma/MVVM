@@ -1,7 +1,6 @@
-import android.content.Context;
+package com.paramgy.mvvm;
 
-import com.paramgy.mvvm.Note;
-import com.paramgy.mvvm.NoteDao;
+import android.content.Context;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -9,12 +8,12 @@ import androidx.room.RoomDatabase;
 
 @Database(entities = {Note.class},version = 1)
 public abstract class NoteDatabase extends RoomDatabase {
-
+    // To create a Singleton pattern (Only one instance of com.paramgy.mvvm.NoteDatabase on the whole App).
     private static NoteDatabase instance ;
 
     public abstract NoteDao noteDao();
 
-    private static synchronized NoteDatabase getInstance(Context context){
+    public static synchronized NoteDatabase getInstance(Context context){
 
         if(instance==null){
             instance = Room.databaseBuilder(context.getApplicationContext(),NoteDatabase.class,
@@ -23,8 +22,4 @@ public abstract class NoteDatabase extends RoomDatabase {
         }
         return instance;
     }
-
-
-
-
 }
