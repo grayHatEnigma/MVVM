@@ -9,8 +9,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 public class NoteViewModel extends AndroidViewModel {
-    NoteRepository repository;
-    LiveData<List<Note>> allNotes;
+    private NoteRepository repository;
+    private  LiveData<List<Note>> allNotes;
 
     public NoteViewModel(@NonNull Application application) {
         super(application);

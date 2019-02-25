@@ -1,5 +1,6 @@
 package com.paramgy.mvvm;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -38,6 +39,12 @@ public class Note {
 
     public int getPriority() {
         return priority;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return title;
     }
 }
 
