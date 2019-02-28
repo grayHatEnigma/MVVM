@@ -1,6 +1,7 @@
 package com.paramgy.mvvm;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,19 +32,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
     NoteViewModel noteViewModel;
+    private Intent addNoteActivity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(this,"ocCreate();",Toast.LENGTH_SHORT).show();
+
 
         FloatingActionButton addNoteButton = findViewById(R.id.button_add_note);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addNoteAcvtivity = new Intent(MainActivity.this,AddNote.class);
-                startActivity(addNoteAcvtivity);
+                addNoteActivity = new Intent(MainActivity.this,AddNote.class);
+                startActivity(addNoteActivity);
             }
         });
 
@@ -54,10 +57,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-//        noteViewModel.deleteAll();
-//        noteViewModel.insert(new Note("Work Email","salam92work@gmail.com",3));
-//        noteViewModel.insert(new Note("Daily Email","mohamed92salama@gmail.com",2));
-//        noteViewModel.insert(new Note("Facebook Email","grayHatEnigma@gmail.com",1));
         noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
@@ -77,6 +76,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
+        adapter.setListener(new NoteAdapter.OnRecyclerItemClickListener() {
+            @Override
+            public void onItemClick(Note note) {
+
+                addNoteActivity = new Intent(MainActivity.this,AddNote.class);
+                addNoteActivity.putExtra("title",note.getTitle());
+                addNoteActivity.putExtra("description",note.getDescribtion());
+                addNoteActivity.putExtra("priority",note.getPriority());
+                addNoteActivity.putExtra("ID",note.getId());
+                startActivity(addNoteActivity);
+            }
+        });
+
     }// End on create
 
     @Override
@@ -92,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             noteViewModel.deleteAll();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }// End MainAvtivity
+

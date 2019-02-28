@@ -17,7 +17,7 @@ public class AddNote extends AppCompatActivity {
     private EditText editTextTiltle;
     private EditText editTextDescription;
     private NumberPicker numberPickerPriority;
-
+    private int ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +29,26 @@ public class AddNote extends AppCompatActivity {
         numberPickerPriority.setMinValue(1);
         numberPickerPriority.setMaxValue(10);
 
-        //Setting Activity Title to "Add Note" and the top back button to X icon
+      // Changing the top back button to X icon
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Note");
+
+        //Setting Activity Title depending on intent tag value
+        if(!getIntent().hasExtra("ID")) {
+            setTitle("Add Note");
+        }
+        else if(getIntent().hasExtra("ID")){
+            setTitle("Edit Note");
+            String title = getIntent().getStringExtra("title");
+            String description = getIntent().getStringExtra("description");
+            int priority = getIntent().getIntExtra("priority",1);
+            int ID = getIntent().getIntExtra("ID",-1);
+
+            editTextTiltle.setText(title);
+            editTextDescription.setText(description);
+            numberPickerPriority.setValue(priority);
+            this.ID = ID;
+        }
+
 
     }// End onCreate();
 
@@ -48,11 +65,18 @@ public class AddNote extends AppCompatActivity {
         }
 
         SaveNoteViewModel saveNoteViewModel = ViewModelProviders.of(this).get(SaveNoteViewModel.class);
-        saveNoteViewModel.saveNote(new Note(title,description,priority));
-        Toast.makeText(this, "Note Saved",
-                Toast.LENGTH_SHORT).show();
+       if(getIntent().hasExtra("ID") && ID != -1){
+           Note note = new Note(title,description,priority);
+           note.setId(ID);
+           saveNoteViewModel.update(note);
+
+        }else {
+           saveNoteViewModel.saveNote(new Note(title, description, priority));
+           Toast.makeText(this, "Note Saved",
+                   Toast.LENGTH_SHORT).show();
+       }
         finish();
-    }
+    }// end saveNote();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
